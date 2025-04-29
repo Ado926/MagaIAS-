@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>MagaIAS XD by Wirk</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffccf9, #a0c4ff);
+      font-family: 'Comic Sans MS', cursive;
+      text-align: center;
+      padding: 20px;
+      color: #4b0082;
+    }
+    h1 {
+      font-size: 3em;
+      margin-bottom: 0;
+    }
+    h2 {
+      font-size: 1.2em;
+      color: #ff007f;
+    }
+    #chat-box {
+      background: #fff0f5;
+      border: 2px dashed #ff69b4;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 500px;
+      height: 300px;
+      margin: 20px auto;
+      overflow-y: scroll;
+      padding: 10px;
+      text-align: left;
+    }
+    .msg {
+      margin: 5px 0;
+    }
+    .ia {
+      color: #ff1493;
+      font-weight: bold;
+    }
+    .user {
+      color: #000080;
+      font-weight: bold;
+    }
+    .gif {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 5px;
+    }
+    #input-area {
+      margin-top: 20px;
+    }
+    select, input {
+      padding: 8px;
+      font-size: 1em;
+      border-radius: 10px;
+      border: none;
+      margin: 5px;
+    }
+    button {
+      background: #ff69b4;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #ff1493;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>MagaIAS XD</h1>
+  <h2>by Wirk — ¡Chatea con IAs loquitas y mágicas! 👻✨</h2>
+
+  <div id="chat-box"></div>
+
+  <div id="input-area">
+    <select id="personality">
+      <option value="kawaii">Maga Kawaii ✨</option>
+      <option value="bruja">Maga Bruja del Caos 🧙‍♀️</option>
+      <option value="robot">IA Robot Tontita 🤖</option>
+      <option value="dark">Maga Oscura Dramática 🕷️</option>
+    </select><br>
+    <input type="text" id="userInput" placeholder="Escribe tu hechizo aquí...">
+    <button onclick="sendMessage()">Enviar</button>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById('chat-box');
+
+    function sendMessage() {
+      const input = document.getElementById('userInput');
+      const personality = document.getElementById('personality').value;
+      const text = input.value.trim();
+      if (!text) return;
+      appendMessage('user', 'Tú', text);
+      setTimeout(() => respond(personality, text), 500);
+      input.value = '';
+    }
+
+    function appendMessage(type, name, message, gifUrl = null) {
+      const msg = document.createElement('div');
+      msg.className = 'msg ' + type;
+      msg.innerHTML = `<strong>${name}:</strong> ${message}`;
+      if (gifUrl) {
+        msg.innerHTML += `<br><img class="gif" src="${gifUrl}" alt="gif">`;
+      }
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function respond(personality, text) {
+      let response = '';
+      let gif = '';
+
+      switch (personality) {
+        case 'kawaii':
+          response = `¡Nyaa~ eso fue muy kawaii! UwU ✨🌈💖`;
+          gif = 'https://media.giphy.com/media/l0MYwONBGDS7aPGOk/giphy.gif';
+          break;
+        case 'bruja':
+          response = `¡Hechizo loco activado! *Ríe como bruja* Hahaha! 🧹💥`;
+          gif = 'https://media.giphy.com/media/3oz8xIsloV7zOmt81G/giphy.gif';
+          break;
+        case 'robot':
+          response = `01010011... ERROR DE CARIÑO... *manda abrazito binario* 🤖❤️`;
+          gif = 'https://media.giphy.com/media/xT5LMHxhOfscxPfIfm/giphy.gif';
+          break;
+        case 'dark':
+          response = `Tu mensaje me consume lentamente... ☠️ No hay escape del destino.`;
+          gif = 'https://media.giphy.com/media/3o7qDEq2bMbcbPRQ2c/giphy.gif';
+          break;
+      }
+
+      appendMessage('ia', personality, response, gif);
+    }
+  </script>
+
+</body>
+</html>
