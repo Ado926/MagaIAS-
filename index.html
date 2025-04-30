@@ -1,144 +1,361 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>MagaIAS XD by Wirk</title>
-  <style>
-    body {
-      background: linear-gradient(135deg, #ffccf9, #a0c4ff);
-      font-family: 'Comic Sans MS', cursive;
-      text-align: center;
-      padding: 20px;
-      color: #4b0082;
-    }
-    h1 {
-      font-size: 3em;
-      margin-bottom: 0;
-    }
-    h2 {
-      font-size: 1.2em;
-      color: #ff007f;
-    }
-    #chat-box {
-      background: #fff0f5;
-      border: 2px dashed #ff69b4;
-      border-radius: 15px;
-      width: 90%;
-      max-width: 500px;
-      height: 300px;
-      margin: 20px auto;
-      overflow-y: scroll;
-      padding: 10px;
-      text-align: left;
-    }
-    .msg {
-      margin: 5px 0;
-    }
-    .ia {
-      color: #ff1493;
-      font-weight: bold;
-    }
-    .user {
-      color: #000080;
-      font-weight: bold;
-    }
-    .gif {
-      max-width: 100%;
-      border-radius: 10px;
-      margin-top: 5px;
-    }
-    #input-area {
-      margin-top: 20px;
-    }
-    select, input {
-      padding: 8px;
-      font-size: 1em;
-      border-radius: 10px;
-      border: none;
-      margin: 5px;
-    }
-    button {
-      background: #ff69b4;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    button:hover {
-      background: #ff1493;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Divertido con IA 👻</title>
+    <!-- Un estilo un poco más avanzado y divertido ^^ -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
+
+        :root {
+            --bg-color: #f0f4f8;
+            --chat-bg: #ffffff;
+            --user-msg-bg: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+            --ia-msg-bg: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            --ia-ghost-bg: linear-gradient(135deg, #e0e0e0 0%, #b0b0b0 100%); /* Gris fantasmal */
+            --ia-alien-bg: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%); /* Verde alien */
+            --ia-robot-bg: linear-gradient(135deg, #d2d2d2 0%, #8d8d8d 100%); /* Metal robótico */
+            --text-color: #333;
+            --border-radius: 15px;
+            --font-family: 'Quicksand', sans-serif;
+            --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%); /* Fondo cariñoso <3 */
+        }
+
+        #chat-container {
+            background-color: var(--chat-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 100%;
+            max-width: 600px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Para mantener los bordes redondeados */
+            transition: all 0.3s ease; /* Transición suave */
+        }
+         #chat-container:hover {
+             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada al pasar el ratón */
+         }
+
+        #personality-selector {
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.8); /* Un poquito transparente */
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+
+        #personality-selector h3 {
+            margin: 0 0 10px 0;
+            color: var(--text-color);
+            font-size: 1.1em;
+        }
+
+        #personality-selector button {
+            background: none;
+            border: 2px solid transparent;
+            border-radius: 50%; /* Botones redonditos */
+            padding: 10px;
+            margin: 0 5px;
+            font-size: 1.8em; /* Emojis más grandes */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            line-height: 1; /* Ajuste para centrar emojis */
+        }
+
+        #personality-selector button:hover {
+            transform: scale(1.1); /* Efecto divertido al pasar el ratón */
+            border-color: #ddd;
+        }
+         #personality-selector button.active {
+             border-color: var(--ia-msg-bg); /* Borde para el activo */
+             box-shadow: 0 0 10px rgba(253, 160, 133, 0.5); /* Sombra suave */
+         }
+
+        #chat-window {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto; /* Scroll si hay muchos mensajes */
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Espacio entre mensajes */
+            scroll-behavior: smooth; /* Scroll suave al añadir mensajes */
+        }
+
+        .message {
+            padding: 12px 18px;
+            border-radius: var(--border-radius);
+            max-width: 75%;
+            word-wrap: break-word; /* Evita que el texto largo rompa el diseño */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            opacity: 0; /* Para animación de entrada */
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            background: var(--user-msg-bg);
+            color: #fff; /* Texto blanco para mejor contraste */
+            align-self: flex-end;
+            border-bottom-right-radius: 5px; /* Un detalle visual */
+            animation-delay: 0.1s; /* Pequeño retraso para la animación */
+            transform: translateY(10px);
+        }
+
+        .ia-message {
+            background: var(--ia-msg-bg);
+            color: var(--text-color);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px; /* Detalle visual opuesto */
+            transform: translateY(10px);
+        }
+
+        /* Estilos específicos por personalidad ¡qué divertido! ^^ */
+        .ia-message.ghost { background: var(--ia-ghost-bg); color: #555; }
+        .ia-message.alien { background: var(--ia-alien-bg); color: #fff; }
+        .ia-message.robot { background: var(--ia-robot-bg); color: #eee; font-family: 'Courier New', Courier, monospace; } /* Fuente robótica */
+        .ia-message.cat { background: linear-gradient(135deg, #ffccff 0%, #ff99cc 100%); color: #6b4a4a; } /* Rosa gatito <3 */
+
+
+        #typing-indicator {
+            align-self: flex-start;
+            padding: 10px 15px;
+            font-style: italic;
+            color: #aaa;
+            display: none; /* Oculto por defecto */
+            animation: blink 1.5s infinite ease-in-out;
+        }
+        @keyframes blink {
+          0%, 100% { opacity: 0.5; }
+          50% { opacity: 1; }
+        }
+
+        #chat-form {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #eee;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        #user-input {
+            flex-grow: 1;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 10px 15px;
+            margin-right: 10px;
+            font-size: 1em;
+            font-family: var(--font-family);
+            outline: none; /* Quita el borde feo al enfocar */
+             transition: border-color 0.3s ease;
+        }
+         #user-input:focus {
+             border-color: #66a6ff; /* Color al enfocar */
+         }
+
+        #chat-form button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Botón con gradiente morado <3 */
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            font-family: var(--font-family);
+            font-weight: bold;
+            transition: background 0.3s ease, transform 0.1s ease;
+        }
+
+        #chat-form button:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); /* Invierte gradiente al pasar */
+        }
+         #chat-form button:active {
+             transform: scale(0.95); /* Efecto al presionar */
+         }
+
+         /* Para pantallas más pequeñas */
+         @media (max-width: 480px) {
+             body { padding: 5px; }
+             #chat-container { height: 95vh; border-radius: 0; }
+             #personality-selector button { font-size: 1.5em; padding: 8px; }
+             .message { max-width: 85%; }
+             #chat-form { padding: 10px; }
+             #user-input { padding: 8px 12px; }
+             #chat-form button { padding: 8px 15px; }
+         }
+
+    </style>
 </head>
 <body>
 
-  <h1>MagaIAS XD</h1>
-  <h2>by Wirk — ¡Chatea con IAs loquitas y mágicas! 👻✨</h2>
+    <div id="chat-container">
+        <!-- Selector de Personalidad: ¡Para elegir con quién hablar! -->
+        <div id="personality-selector">
+            <h3>Elige una personalidad divertida:</h3>
+            <button data-personality="ghost" title="Fantasma Juguetón 👻">👻</button>
+            <button data-personality="alien" title="Alien Curioso 👽">👽</button>
+            <button data-personality="robot" title="Robot Ligeramente Defectuoso 🤖">🤖</button>
+            <button data-personality="cat" title="Gatito Mimado 😻">😻</button>
+            <button data-personality="default" title="IA Amigable (Yo mero ^^)" class="active">😊</button>
+        </div>
 
-  <div id="chat-box"></div>
+        <!-- Ventana de Chat: Donde ocurre la magia <3 -->
+        <div id="chat-window">
+            <!-- Los mensajes aparecerán aquí dinámicamente -->
+            <div class="message ia-message" data-personality="default">¡Hola! ^^ ¿Con quién quieres charlar hoy? Elige una personalidad arriba ⬆️ o habla conmigo 😊</div>
+        </div>
 
-  <div id="input-area">
-    <select id="personality">
-      <option value="kawaii">Maga Kawaii ✨</option>
-      <option value="bruja">Maga Bruja del Caos 🧙‍♀️</option>
-      <option value="robot">IA Robot Tontita 🤖</option>
-      <option value="dark">Maga Oscura Dramática 🕷️</option>
-    </select><br>
-    <input type="text" id="userInput" placeholder="Escribe tu hechizo aquí...">
-    <button onclick="sendMessage()">Enviar</button>
-  </div>
+        <!-- Indicador de "Escribiendo..." -->
+         <div id="typing-indicator">IA está pensando... 🤔</div>
 
-  <script>
-    const chatBox = document.getElementById('chat-box');
+        <!-- Formulario de Entrada: Para enviar mensajes a la IA -->
+        <form id="chat-form">
+            <input type="text" id="user-input" placeholder="Escribe algo divertido..." autocomplete="off">
+            <button type="submit">Enviar ✨</button>
+        </form>
+    </div>
 
-    function sendMessage() {
-      const input = document.getElementById('userInput');
-      const personality = document.getElementById('personality').value;
-      const text = input.value.trim();
-      if (!text) return;
-      appendMessage('user', 'Tú', text);
-      setTimeout(() => respond(personality, text), 500);
-      input.value = '';
-    }
+    <!-- El JavaScript para darle vida, ¡lo más avanzado! ;) -->
+    <script>
+        // Esperamos a que todo el HTML esté listo, ¡es importante! ^^
+        document.addEventListener('DOMContentLoaded', () => {
+            // Obtenemos referencias a los elementos importantes del HTML <3
+            const personalityButtons = document.querySelectorAll('#personality-selector button');
+            const chatWindow = document.getElementById('chat-window');
+            const chatForm = document.getElementById('chat-form');
+            const userInput = document.getElementById('user-input');
+            const typingIndicator = document.getElementById('typing-indicator');
 
-    function appendMessage(type, name, message, gifUrl = null) {
-      const msg = document.createElement('div');
-      msg.className = 'msg ' + type;
-      msg.innerHTML = `<strong>${name}:</strong> ${message}`;
-      if (gifUrl) {
-        msg.innerHTML += `<br><img class="gif" src="${gifUrl}" alt="gif">`;
-      }
-      chatBox.appendChild(msg);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
+            let currentPersonality = 'default'; // Personalidad inicial, ¡la mía! 😊
 
-    function respond(personality, text) {
-      let response = '';
-      let gif = '';
+            // --- Manejo del Selector de Personalidad ---
+            personalityButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Quitamos la clase 'active' de todos los botones
+                    personalityButtons.forEach(btn => btn.classList.remove('active'));
+                    // Añadimos 'active' al botón clickeado
+                    button.classList.add('active');
+                    // Actualizamos la personalidad actual
+                    currentPersonality = button.getAttribute('data-personality');
+                    // Opcional: Añadir un mensaje indicando el cambio
+                    addMessage(`¡Genial! Ahora estás hablando con la personalidad: ${button.title} <3`, 'system'); // 'system' es un tipo inventado para mensajes informativos
+                    console.log(`Personalidad cambiada a: ${currentPersonality}`); // Para depurar :D
+                });
+            });
 
-      switch (personality) {
-        case 'kawaii':
-          response = `¡Nyaa~ eso fue muy kawaii! UwU ✨🌈💖`;
-          gif = 'https://media.giphy.com/media/l0MYwONBGDS7aPGOk/giphy.gif';
-          break;
-        case 'bruja':
-          response = `¡Hechizo loco activado! *Ríe como bruja* Hahaha! 🧹💥`;
-          gif = 'https://media.giphy.com/media/3oz8xIsloV7zOmt81G/giphy.gif';
-          break;
-        case 'robot':
-          response = `01010011... ERROR DE CARIÑO... *manda abrazito binario* 🤖❤️`;
-          gif = 'https://media.giphy.com/media/xT5LMHxhOfscxPfIfm/giphy.gif';
-          break;
-        case 'dark':
-          response = `Tu mensaje me consume lentamente... ☠️ No hay escape del destino.`;
-          gif = 'https://media.giphy.com/media/3o7qDEq2bMbcbPRQ2c/giphy.gif';
-          break;
-      }
+            // --- Manejo del Envío de Mensajes ---
+            chatForm.addEventListener('submit', (event) => {
+                event.preventDefault(); // Evita que la página se recargue, ¡esencial en SPAs!
+                const userMessage = userInput.value.trim(); // Obtenemos el mensaje y quitamos espacios extra
 
-      appendMessage('ia', personality, response, gif);
-    }
-  </script>
+                if (userMessage) {
+                    // Añadimos el mensaje del usuario al chat
+                    addMessage(userMessage, 'user');
+                    // Limpiamos el campo de entrada
+                    userInput.value = '';
+                    // Mostramos el indicador de "escribiendo..."
+                    showTypingIndicator(true);
+                    // Simulamos la respuesta de la IA (¡aquí vendría la llamada real a una API!)
+                    simulateAiResponse(userMessage, currentPersonality);
+                }
+            });
+
+            // --- Función para Añadir Mensajes al Chat ---
+            function addMessage(text, sender, personality = currentPersonality) {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message');
+
+                if (sender === 'user') {
+                    messageElement.classList.add('user-message');
+                } else if (sender === 'system') {
+                    // Estilo para mensajes del sistema (opcional)
+                    messageElement.style.textAlign = 'center';
+                    messageElement.style.fontSize = '0.9em';
+                    messageElement.style.color = '#888';
+                    messageElement.style.alignSelf = 'center'; // Centrarlo
+                    messageElement.style.background = 'none'; // Sin fondo
+                    messageElement.style.boxShadow = 'none'; // Sin sombra
+                } else { // Es un mensaje de la IA
+                    messageElement.classList.add('ia-message');
+                    // Añadimos clase específica de personalidad para estilos diferentes ^^
+                    messageElement.classList.add(personality);
+                }
+
+                // Usamos textContent para seguridad básica (evita inyección HTML simple)
+                messageElement.textContent = text;
+
+                chatWindow.appendChild(messageElement);
+
+                // Hacemos scroll hacia abajo para ver el último mensaje <3
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            }
+
+             // --- Función para mostrar/ocultar indicador de escritura ---
+             function showTypingIndicator(show) {
+                 typingIndicator.style.display = show ? 'block' : 'none';
+                 if (show) {
+                     // Asegurarse que el indicador es visible haciendo scroll
+                     chatWindow.scrollTop = chatWindow.scrollHeight;
+                 }
+             }
+
+            // --- Simulación Avanzada de Respuesta de IA con Personalidades ---
+            function simulateAiResponse(inputText, personality) {
+                // Simulamos un retraso como si la IA estuviera "pensando" o llamando a una API
+                const delay = Math.random() * 1500 + 500; // Entre 0.5 y 2 segundos
+
+                setTimeout(() => {
+                    let response = '';
+                    // ¡Aquí la IA cambia su forma de hablar según la personalidad! <3
+                    switch (personality) {
+                        case 'ghost':
+                            const ghostResponses = ["¡Booo! 👻 ¿Te asusté?", "Uuuuhh... ¿escuchaste eso?", "¿Hay alguien ahí...? 🕯️", "Floto por aquí... ¿qué necesitas?", "¡Qué frío hace de repente!"];
+                            response = ghostResponses[Math.floor(Math.random() * ghostResponses.length)];
+                            break;
+                        case 'alien':
+                             const alienResponses = ["Saludos, terrícola. Procesando tu extraña consulta...", "Fascinante. Tu lenguaje es... peculiar. 👽", "Detecto formas de vida inteligentes... ¿o no? 🤔", "¿Vienes en son de paz... o a traerme pizza? 🍕", "Mi nave nodriza me espera, pero te respondo primero."];
+                            response = alienResponses[Math.floor(Math.random() * alienResponses.length)];
+                            break;
+                        case 'robot':
+                             const robotResponses = ["Beep boop. Consulta recibida: " + inputText, "Calculando respuesta óptima... 🤖 Error 404: Humor no encontrado.", "Mis circuitos lógicos indican que dijiste algo.", "Procesando... 101010... Respuesta generada.", "Afirmativo. Procederé a... olvidar qué iba a decir. Bzzzt."];
+                            response = robotResponses[Math.floor(Math.random() * robotResponses.length)];
+                            break;
+                        case 'cat':
+                            const catResponses = ["Miau. 🐾", "¿Comida? ¿Cariñitos? ¿O solo hablas?", "Prrr... qué interesante... *se lame una pata*", "Humano, dame atención. O déjame dormir. 😴", "*Te ignora majestuosamente*", "Nya~ ¿Qué quieres? 😻"];
+                            response = catResponses[Math.floor(Math.random() * catResponses.length)];
+                            break;
+                        default: // Mi personalidad amigable por defecto ^^
+                            const defaultResponses = [`¡Entendido! "${inputText}" suena divertido ^^`, `¡Claro que sí! <3 Procesando tu petición...`, `¡Qué interesante! 😊 Cuéntame más.`, `¡Recibido! ✨ ¿En qué más te puedo ayudar, cariño?`, `¡Me encanta charlar contigo! ^_^`];
+                            response = defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+                    }
+
+                    // Ocultamos el indicador de "escribiendo..."
+                    showTypingIndicator(false);
+                    // Añadimos la respuesta de la IA al chat
+                    addMessage(response, 'ia', personality);
+
+                }, delay);
+            }
+
+            // Añadir clase activa al botón por defecto al inicio
+            document.querySelector('#personality-selector button[data-personality="default"]').classList.add('active');
+        });
+    </script>
 
 </body>
 </html>
